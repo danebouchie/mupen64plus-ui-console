@@ -26,7 +26,7 @@
 #if !defined(VERSION_H)
 #define VERSION_H
 
-#define CONSOLE_UI_NAME    "Mupen64Plus Console User-Interface"
+#define CONSOLE_UI_NAME    "Mupen64Plus Console User-Interface (Fuzzy Edition)"
 #define CONSOLE_UI_VERSION 0x020500
 #define CORE_API_VERSION   0x020001
 #define CONFIG_API_VERSION 0x020000

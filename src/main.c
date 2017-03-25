@@ -55,6 +55,7 @@ static const char *l_CoreLibPath = NULL;
 static const char *l_ConfigDirPath = NULL;
 static const char *l_ROMFilepath = NULL;       // filepath of ROM to load & run at startup
 static const char *l_SaveStatePath = NULL;     // save state to load at startup
+static const char *l_FuzzerLuaPath = NULL;
 
 #if defined(SHAREDIR)
   static const char *l_DataDirPath = SHAREDIR;
@@ -424,11 +425,16 @@ static int ParseCommandLineInitial(int argc, const char **argv)
             l_DataDirPath = argv[i+1];
             i++;
         }
-        else if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0)
-        {
-            printUsage(argv[0]);
-            return 1;
-        }
+		else if (strcmp(argv[i], "--fuzzer-lua") == 0 && ArgsLeft >= 1)
+		{
+			l_FuzzerLuaPath = argv[i + 1];
+			i++;
+		}
+		else if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0)
+		{
+			printUsage(argv[0]);
+			return 1;
+		}
     }
 
     return 0;
@@ -577,7 +583,7 @@ static m64p_error ParseCommandLineFinal(int argc, const char **argv)
         else if (strcmp(argv[i], "--nosaveoptions") == 0)
         {
             l_SaveOptions = 0;
-        }
+        } 
         else if (ArgsLeft == 0)
         {
             /* this is the last arg, it should be a ROM filename */
@@ -625,12 +631,12 @@ int main(int argc, char *argv[])
 {
     int i;
 
-    printf(" __  __                         __   _  _   ____  _             \n");  
-    printf("|  \\/  |_   _ _ __   ___ _ __  / /_ | || | |  _ \\| |_   _ ___ \n");
-    printf("| |\\/| | | | | '_ \\ / _ \\ '_ \\| '_ \\| || |_| |_) | | | | / __|  \n");
-    printf("| |  | | |_| | |_) |  __/ | | | (_) |__   _|  __/| | |_| \\__ \\  \n");
+    printf(" __  __                         __   _  _   ____  _					\n");  
+    printf("|  \\/  |_   _ _ __   ___ _ __  / /_ | || | |  _ \\| |_   _ ___		\n");
+    printf("| |\\/| | | | | '_ \\ / _ \\ '_ \\| '_ \\| || |_| |_) | | | | / __| \n");
+    printf("| |  | | |_| | |_) |  __/ | | | (_) |__   _|  __/| | |_| \\__ \\	\n");
     printf("|_|  |_|\\__,_| .__/ \\___|_| |_|\\___/   |_| |_|   |_|\\__,_|___/  \n");
-    printf("             |_|         http://code.google.com/p/mupen64plus/  \n");
+    printf("             |_|         http://code.google.com/p/mupen64plus/		\n");
     printf("%s Version %i.%i.%i\n\n", CONSOLE_UI_NAME, VERSION_PRINTF_SPLIT(CONSOLE_UI_VERSION));
 
     /* bootstrap some special parameters from the command line */
@@ -642,7 +648,7 @@ int main(int argc, char *argv[])
         return 2;
 
     /* start the Mupen64Plus core library, load the configuration file */
-    m64p_error rval = (*CoreStartup)(CORE_API_VERSION, l_ConfigDirPath, l_DataDirPath, "Core", DebugCallback, NULL, CALLBACK_FUNC);
+	m64p_error rval = (*CoreStartup)(CORE_API_VERSION, l_ConfigDirPath, l_DataDirPath, "Core", l_FuzzerLuaPath, DebugCallback, NULL, CALLBACK_FUNC);
     if (rval != M64ERR_SUCCESS)
     {
         DebugMessage(M64MSG_ERROR, "couldn't start Mupen64Plus core library.");
